@@ -29,9 +29,37 @@ def audit_file(filename, fields):
     fieldtypes = {}
 
     # YOUR CODE HERE
-
+    def get_type(item):
+        item = item.strip()
+        if item == 'NULL':
+            return type(None)
+#        if '|' in item:
+#            return type([])
+        if item[0]=='{':
+            return type([])
+        try:
+            float(item)
+            return type(1.1)
+        except ValueError:
+            return type('')
+            
+    def skip_lines(input_file,skip):
+        for i in range(skip):
+            next(input_file)
+        
+    for f in fields:
+        fieldtypes[f]=set()
+        
+    input_file = csv.DictReader(open(filename))
+    skip_lines(input_file, 3)
+    
+    for row in input_file:
+        for f in FIELDS:
+            item_type = get_type(row[f])
+            fieldtypes[f].add(item_type)
 
     return fieldtypes
+
 
 
 def test():
